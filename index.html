@@ -23,7 +23,6 @@
             background-color: var(--bg-color); /* Deep Indigo/Night Sky */
             color: var(--text-primary); /* Soft Off-White */
             -webkit-font-smoothing: antialiased;
-            /* Prevent rubber-band scrolling on body */
             overscroll-behavior-y: none; 
         }
 
@@ -57,7 +56,7 @@
         .story-card {
             transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s;
             background-color: #3f3563;
-            touch-action: manipulation; /* Improves touch response */
+            touch-action: manipulation;
             cursor: pointer;
         }
 
@@ -178,8 +177,8 @@
 
                 <h2 class="text-2xl md:text-4xl font-bold mb-6 text-purple-200 border-b border-purple-800/50 pb-4 leading-tight px-1"><span id="readerTitle"></span></h2>
                 
-                <!-- Filename Hint -->
-                <p id="filenameHint" class="text-center text-xs text-purple-300/80 mb-6 italic px-4 font-mono bg-purple-900/30 p-2 rounded-lg border border-purple-500/30">
+                <!-- Filename Hint (NOW THE CRITICAL HINT) -->
+                <p id="filenameHint" class="text-center text-sm md:text-base text-purple-300/80 mb-6 italic px-4 font-mono bg-purple-900/30 p-2 rounded-lg border border-purple-500/30 font-semibold">
                     <!-- Filename will be inserted here -->
                 </p>
 
@@ -188,11 +187,14 @@
                     
                     <!-- Static Image Area -->
                     <div id="illustrationArea" class="mb-8 rounded-xl overflow-hidden shadow-2xl border border-purple-500/20 bg-gray-900">
-                        <img id="storyImage" src="" 
+                        <img id="storyImage" 
+                             src="" 
                              class="w-full object-cover h-64 sm:h-80 md:h-[28rem] transition-opacity duration-500 opacity-0" 
                              alt="Story Illustration" 
-                             onload="this.classList.remove('opacity-0')"
-                             onerror="this.onerror=null; this.src='https://placehold.co/800x600/3f3563/c4b5fd?text=Missing+Image'; this.classList.remove('opacity-0'); document.getElementById('filenameHint').textContent = '⚠️ Failed to load. Placeholder shown. Please upload the file: ' + this.dataset.filename;">
+                             onload="this.classList.remove('opacity-0');"
+                             onerror="this.onerror=null; this.src='https://placehold.co/800x600/3f3563/c4b5fd?text=FILE+MISSING'; 
+                                     this.classList.remove('opacity-0'); 
+                                     document.getElementById('filenameHint').innerHTML = '<span class=\'text-red-400 font-bold\'>⚠️ IMAGE FAILED TO LOAD!</span><br>Please ensure the file <code class=\'text-yellow-300\'>' + this.dataset.filename + '</code> is uploaded to the root of the project.';">
                     </div>
                     
                     <!-- The Story Text -->
@@ -243,16 +245,16 @@
         // --- Utility function to create a clean URL slug ---
         const slugify = (text) => {
             if (!text) return '';
+            // 1. Replace all non-alphanumeric/whitespace/hyphen characters with nothing
             return text.toLowerCase()
                 .replace(/—/g, ' ') // Replace em-dash with space first
-                .replace(/[^a-z0-9\s-]/g, '') // Remove punctuation/non-alphanumeric (except spaces/hyphens)
+                .replace(/[^a-z0-9\s-]/g, '') 
                 .trim()
-                .replace(/\s+/g, '-'); // Replace spaces with -
+                .replace(/\s+/g, '-'); // Replace spaces with a single hyphen
         };
 
         // --- API Setup ---
-        const apiKey = ""; // Insert your API Key here if hosting on Vercel
-        
+        const apiKey = "";
         const TEXT_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
         // --- Helper: Fetch with Backoff ---
@@ -289,58 +291,57 @@
                         id: 1, 
                         icon: "💎",
                         title: "Night 1 — The Crystal Cave", 
-                        // The image source is a placeholder for immediate functionality
-                        image: "https://placehold.co/800x600/3f3563/c4b5fd?text=Night+1+-+The+Crystal+Cave",
-                        // The standardized filename for the user to replace with the relative path
-                        filename: `elara-${slugify("Night 1 — The Crystal Cave")}.png`, 
+                        // DIRECT FILENAME REFERENCE: The image source is set to the relative path of the expected filename.
+                        image: "./elara-night-1-the-crystal-cave.png", 
+                        filename: "elara-night-1-the-crystal-cave.png", 
                         content: "The moon was bright and round outside Elara’s window, hanging in the sky like a perfect silver coin. Elara was tucked warm in her bed, but the room was suddenly filled with a soft, magical fluttering. A tiny moth had flown in—a Moon Moth, made of soft, glowing dust that shimmered like starlight. Elara knew in her heart this was a magic guide. She slipped quietly out of bed, her bare feet touching the cool floor. Her fluffy white cloud-cat, Nimbus, stretched and followed, and her tiny fairy friend Flicker zipped silently through the air beside them.\n\nThe Moon Moth led them out of the house and into the cool, sleeping woods. It didn't take them to a dark or scary place. Instead, it led them to a hidden entrance of a Crystal Cave. Inside, it wasn't dark at all. The cave was filled with soft, rainbow light coming from giant crystals that grew on the walls. The crystals hummed with a low, gentle energy, making the air feel warm and still.\n\nIn the very middle of the cave, sitting on a tall, smooth rock pedestal, was a tiny, shimmering object. It was a dragon egg. It looked lonely but beautiful. Elara walked toward it slowly. She touched the egg gently with her fingertips. It felt incredibly warm, like a mug of hot cocoa held in cold hands. As she touched it, a tiny crack appeared on the shell, glowing with a soft, golden light.\n\nElara felt a sudden wave of heavy sleepiness wash over her. She knew she had found something precious that she had to keep safe. The cave was quiet, the crystals were glowing with a dim, slow pulse, and the adventure had just begun.\n\n\nNow, little one, close your eyes. Feel the warm, still air of the Crystal Cave wrapping around you. Imagine the soft, rainbow light of the crystals dimming low, turning into a gentle nightlight for your dreams. Your bed is as solid and safe as the cave floor. Listen to the silence; it is a thick, cozy silence that holds you tight. Your breathing becomes slow and deep, matching the slow pulse of the glowing crystals. In... and out... glowing... and dimming... You are safe, you are warm, and you are ready to drift into a deep, magical sleep. Sleep softly, little one. Sweet dreams." 
                     },
                     { 
                         id: 2, 
                         icon: "🌿",
                         title: "Night 2 — The Cradle of Moss", 
-                        image: "https://placehold.co/800x600/3f3563/c4b5fd?text=Night+2+-+Cradle+of+Moss",
-                        filename: `elara-${slugify("Night 2 — The Cradle of Moss")}.png`,
+                        image: "./elara-night-2-the-cradle-of-moss.png",
+                        filename: "elara-night-2-the-cradle-of-moss.png",
                         content: "Elara stayed in the cave, holding the warm dragon egg carefully in her hands. The Moon Moth flew slowly in a wide circle above her head, sprinkling sleepy silver dust into the cool air. The dust drifted down like tiny snowflakes, making Elara’s eyelids feel heavy and relaxed.\n\nFlicker, the tiny fairy, fluttered ahead and pointed to a quiet corner of the cave. The walls there were covered in thick, soft green moss. It wasn't just regular moss; it was deep and cushiony, looking like the softest, thickest blanket in the entire world. Elara knelt down on the quiet earth. She used her hands to shape the moss into a perfect little nest.\n\nShe gently placed the warm egg inside the green cradle. The egg settled in, and its glow turned soft and dim, as if it was getting comfortable for the night. Nimbus, the cloud-cat, curled up right next to the egg, his fluffy white body acting like a pillow. His purr was deep and rumbly, echoing in the quiet cave like a soothing lullaby.\n\nThe cave grew darker as the crystals faded to a gentle twilight purple. Elara felt very heavy and tired. Somewhere deep in the cave, water was dripping into a pool—drip... drip...—a slow, steady clock counting down to sleep. Elara lay down on the cool, soft moss next to Nimbus. It smelled like fresh rain and sweet earth. Beside the glowing egg and the purring cat, she let her eyes close. The quiet darkness of the cave covered her like a heavy quilt, pulling her down, down, down into a deep sleep.\n\n\nNow, little one, let your body sink into your bed. Imagine your mattress is that thick, soft moss, holding you up gently. Smell the fresh, clean scent of the cave air. Hear the slow drip... drip... of the water, slowing down your thoughts. Drip... pause... drip... Your body feels heavy and relaxed, just like Elara lying on the moss. The darkness is safe and cozy, a warm blanket for your mind. You are drifting deeper into the quiet, deeper into the soft green comfort. You are asleep. Sweet dreams." 
                     },
                     { 
                         id: 3, 
                         icon: "🎶",
                         title: "Night 3 — The Singing Shiver", 
-                        image: "https://placehold.co/800x600/3f3563/c4b5fd?text=Night+3+-+The+Singing+Shiver",
-                        filename: `elara-${slugify("Night 3 — The Singing Shiver")}.png`,
+                        image: "./elara-night-3-the-singing-shiver.png",
+                        filename: "elara-night-3-the-singing-shiver.png",
                         content: "Elara woke up slowly on the soft moss, feeling rested and calm. The cave was very quiet, filled with a hush that felt like a secret. She looked immediately at the dragon egg. It sat safely in its mossy nest, glowing steadily like a dim nightlight.\n\nSuddenly, Nimbus lifted his white ears. He had heard something. Elara leaned close to the egg, pressing her ear near the warm shell. She held her breath and listened. Deep inside the shell, past the smooth surface, she heard a sound.\n\n***Hmmm... hmmm...***\n\nIt was a tiny humming sound. It wasn't loud at all. It felt like a gentle shiver in the air, a vibration that tickled her ear. It was a song, ancient and very sleepy, coming from the baby dragon hiding inside. Flicker landed gently on the egg and fluttered her wings to the slow rhythm of the song.\n\nThe singing made the air around them feel warm and golden. It made the green moss glow a little brighter. But mostly, it made Elara feel incredibly, wonderfully tired. The song was a lullaby, and it was singing her back to sleep. The hum slowly faded away, leaving the cave perfectly silent again.\n\nElara’s eyes felt heavy, as if weights were pulling them down. The excitement melted into a warm, safe feeling in her chest. She stretched out on the moss, pulled Nimbus close to her, and let the memory of the quiet song rock her back to sleep.\n\n\nNow, little one, listen to the quiet. Can you hear the memory of that gentle hmmm? It is the sound of pure peace. Feel that gentle shiver of warmth spreading through your toes, your legs, your tummy, and your shoulders. Your body is humming with relaxation. The song is whispering to you: sleep... sleep... Let go of everything. The air is warm, the bed is soft, and the song of sleep is carrying you away. You are drifting deeper into the quiet, deeper into the soft green comfort. You are asleep. Sweet dreams." 
                     },
                     { 
                         id: 4, 
                         icon: "🔑",
                         title: "Night 4 — The Egg's Quiet Promise", 
-                        image: "https://placehold.co/800x600/3f3563/c4b5fd?text=Night+4+-+Quiet+Promise",
-                        filename: `elara-${slugify("Night 4 — The Egg's Quiet Promise")}.png`,
+                        image: "./elara-night-4-the-eggs-quiet-promise.png",
+                        filename: "elara-night-4-the-eggs-quiet-promise.png",
                         content: "Elara woke up when she felt the slightest movement next to her. The dragon egg, still cradled in the soft moss, was rocking gently, almost like a happy cradle. The humming she heard last night was back, but stronger now, a steady, low pulse of sound: *thrum... thrum... thrum...* It was a strong, steady heartbeat inside the shell. Elara knew the little dragon inside was trying hard to break free.\n\nShe looked at the egg and saw a tiny, faint outline of a crack, much clearer than before. It glowed with an excited, golden light, but the shell was still too thick. She placed her hands on the egg and took a slow, deep breath. She didn't want to rush the little dragon, but she wanted to help.\n\nElara decided to share her calm, safe energy with the egg. She pressed her cheek gently against the smooth, warm shell and began to breathe slowly and deeply. In... and out... in... and out... Her breath warmed the shell, and her peaceful, steady heartbeat seemed to travel right through her hands and into the egg. The shell stopped its rocking and seemed to sigh with contentment.\n\nThe dragon's pulsing *thrum* slowed down to match Elara's own slow, sleepy breathing. The glow of the crack dimmed to a soft, amber nightlight. Elara stayed there, cheek-to-shell, listening to the tiny, strong promise of life inside. She knew they were breathing together, waiting for the perfect time. The peaceful feeling wrapped around her, pulling her into a dreamless, deep rest.\n\n\nNow, little one, feel your own slow, steady heartbeat. **Thrum... thrum... thrum...** Feel the warmth of your breath, slow and deep. In... and out... Your body is perfectly calm, perfectly still. You are breathing with the quiet promise of a perfect night's sleep. Let your mind empty, listening only to the steady rhythm of peace. You are safe. You are ready. Sleep now."
                     },
                     { 
                         id: 5, 
                         icon: "❤️",
                         title: "Night 5 — The Warmth of the Heart-Light", 
-                        image: "https://placehold.co/800x600/3f3563/c4b5fd?text=Night+5+-+Heart+Light",
-                        filename: `elara-${slugify("Night 5 — The Warmth of the Heart-Light")}.png`,
+                        image: "./elara-night-5-the-warmth-of-the-heart-light.png",
+                        filename: "elara-night-5-the-warmth-of-the-heart-light.png",
                         content: "Elara was back in the Crystal Cave with the egg. The air was thick with anticipation. Suddenly, the egg began to move. Tap... tap... tap... It was trying to hatch. The shell was too hard for the little creature inside. The tiny fairy tried to help, tapping with her wand, but she was too small.\n\nElara knew what she had to do. She sat on the floor and held the egg in her hands. She closed her eyes and thought of the warmest, safest feeling she knew—her own bed, her family, and the feeling of a warm hug. She sent that warm feeling right into the egg.\n\nThe egg reacted to her love, glowing bright gold! CRACK! A piece of shell fell away. Then another. Out popped a tiny Purple Dragon, no bigger than an apple. It had big, sleepy gold eyes. It yawned a huge, tiny yawn and shook its little wings. It snuggled right into Elara’s hand, seeking warmth.\n\n\"You are safe,\" Elara whispered. The Moon Moth fluttered over them and sprinkled silver sleeping dust in the air. The bright golden light faded to a warm amber glow. Elara felt her head droop. Holding the warm, sleeping dragon, she let the silver dust settle on her eyes. The cave was silent. The baby was safe. Elara fell into a happy, heavy sleep.\n\n\nNow, little one, imagine that warm golden light. It is glowing right in the center of your chest. It is a warm, heavy light that fills you with peace. Feel the warmth spreading down to your fingers and toes. You are holding a precious, sleepy feeling, just like Elara held the dragon. Everything is okay. Everything is perfect. Let that warm, golden feeling pull you down into sleep. Safe, warm, and deeply asleep." 
                     },
                     { 
                         id: 6, 
                         icon: "🏝️",
                         title: "Night 6 — The Island of Whispers", 
-                        image: "https://placehold.co/800x600/3f3563/c4b5fd?text=Night+6+-+Island+of+Whispers",
-                        filename: `elara-${slugify("Night 6 — The Island of Whispers")}.png`,
+                        image: "./elara-night-6-the-island-of-whispers.png",
+                        filename: "elara-night-6-the-island-of-whispers.png",
                         content: "The tiny purple dragon woke Elara up gently by nudging her hand. In its little paws, it held a piece of driftwood that was glowing with a soft sea-green light. They followed the dragon out of the cave to the edge of a dark, calm ocean. A small silver boat waited for them.\n\nThey drifted across the dark, silent water. There were no waves, only a smooth glide. Soon, they found a floating island made entirely of soft seaweed and white sea foam. This was the Island of Whispers.\n\nElara stepped onto the island. The ground was soft and squishy, like a giant waterbed. The tiny dragon curled up in a pile of sea foam and fell asleep instantly. Every time a small ripple from the ocean hit the island, the whole ground gave a soft sigh and rocked them. Swish... sigh...\n\nElara lay down. The ocean was a giant cradle holding the island. The sky was huge and dark, filled with silent stars. The gentle rocking motion made her body feel like it was melting into the soft foam. Nimbus purred deeply. The island rocked slowly. Elara closed her eyes and drifted into the deepest, darkest sleep of all.\n\n\nNow, little one, you are on the Island of Whispers. Feel your bed becoming soft and squishy, like the sea foam. Hear the ocean breathing: swish... sigh... swish... sigh... With every sigh, your body relaxes more. Your legs are heavy, your arms are heavy, your eyes are heavy. The ocean is rocking you gently to sleep. You are floating on a sea of dreams. Dark, quiet, and peaceful. Sleep now." 
                     },
                     { 
                         id: 7, 
                         icon: "🛶",
                         title: "Night 7 — The Golden River", 
-                        image: "https://placehold.co/800x600/3f3563/c4b5fd?text=Night+7+-+The+Golden+River",
-                        filename: `elara-${slugify("Night 7 — The Golden River")}.png`,
+                        image: "./elara-night-7-the-golden-river.png",
+                        filename: "elara-night-7-the-golden-river.png",
                         content: "Elara woke up in her room, but something was different. The Golden Moon Key she had found in the clouds was glowing in her pocket. The key shone a beam of light that opened a path to a magical place: The River of Molten Gold.\n\nElara, Nimbus, and the tiny dragon walked to the riverbank. The river wasn't made of water; it was made of warm, thick liquid gold, flowing slow and smooth like honey. Huge paper lanterns were floating on the river, waiting for passengers. They climbed into a big, soft lantern lined with pillows.\n\nThey drifted silently down the warm, golden river. The gentle heat from the gold warmed their faces. They passed hills that looked like soft, round marshmallows. Eventually, they reached a dock made of dark chocolate. A fuzzy Marmot was waiting there, holding a silver flute.\n\nThe Marmot played one low, deep note: ***Huuuummmmm***.\n\nIt was the sound of pure sleep. It vibrated through the lantern, making their eyelids flutter and close. Elara tucked the tiny dragon into her pocket next to the warm key. The lantern drifted on into the dark, warm tunnel of the night. The river was slow. The flute was deep. Elara lay back on the pillows. She felt safe, warm, and heavy. The golden river carried her away, down, down, down, into the most perfect, peaceful dream.\n\n\nNow, little one, you are drifting on the Golden River. The warm, golden light surrounds you, making your muscles feel like melting honey. You are moving slowly, so slowly, down the quiet stream. Hear the deep, low note of the flute: Huuuummmmm. It resonates in your chest, calming your heart. You are safe in your soft lantern. There is nowhere to go, nothing to do. Just float. Just drift. The river is taking you to the land of deep sleep. Let go, and let the river carry you. Goodnight, little one." 
                     }
                 ]
@@ -494,10 +495,12 @@
             document.getElementById('outputLullaby').classList.add('hidden');
             document.getElementById('outputGoodnight').classList.add('hidden');
             
-            // --- Logic to always show filename reference ---
+            // --- Set the filename HINT and the SRC attribute ---
             const filenameHintEl = document.getElementById('filenameHint');
-            const fileReference = chapter.filename; // Use the descriptive filename
-            filenameHintEl.textContent = `Image File Reference: ${fileReference}`;
+            const fileReference = chapter.filename; 
+            
+            // The Hint tells the user exactly what to upload and what is being referenced
+            filenameHintEl.innerHTML = `This story references the file: <code class="text-indigo-300">${fileReference}</code>`;
             filenameHintEl.classList.remove('hidden'); 
             // ---------------------------------------------------
             
@@ -513,7 +516,9 @@
             
             // Set the data-filename attribute for use in the onerror handler
             imgEl.dataset.filename = fileReference; 
-            imgEl.src = chapter.image; // Still uses the placeholder for Vercel compatibility
+            
+            // DIRECTLY SETTING THE IMAGE SRC TO THE FILENAME
+            imgEl.src = chapter.image;
             
             // Clean formatting: Replace single newlines with <br> for soft wrap, and double newlines with <br><br> for paragraph breaks.
             const formattedContent = chapter.content
